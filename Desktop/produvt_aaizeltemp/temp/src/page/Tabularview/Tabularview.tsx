@@ -1,5 +1,9 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useRef } from "react";
 import { Table } from "reactstrap"
+import * as XLSX from "xlsx"; // For Excel file generation
+import jsPDF from "jspdf"; // For PDF generation
+import "jspdf-autotable";
+
 
 const Tabularview: FC = () => {
     const [filters, setFilters] = useState({
@@ -7,6 +11,61 @@ const Tabularview: FC = () => {
         to_date: '',
         device_id: ''
     });
+
+    const tableRef = useRef<HTMLTableElement>(null);
+
+ // Function to handle download in different formats
+ const handleDownload = (format: string) => {
+  if (tableRef.current) {
+    const table = tableRef.current;
+
+    // Extract table rows and cells
+    const rows = Array.from(table.rows);
+    const tableData = rows.map(row => {
+      return Array.from(row.cells).map(cell => cell.textContent || "");
+    });
+
+    if (format === "csv") {
+      const csvContent = tableData.map(row => row.join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "table_data.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (format === "excel") {
+      const worksheet = XLSX.utils.aoa_to_sheet(tableData); // Convert table data to worksheet
+      const workbook = XLSX.utils.book_new(); // Create a new workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1"); // Append the worksheet
+    
+      // Generate Excel file and trigger download
+      const excelFile = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([excelFile], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "table_data.xlsx";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+     else if (format === "word") {
+      const doc = new Blob([tableData.map(row => row.join("\t")).join("\n")], { type: "application/msword" });
+      const url = URL.createObjectURL(doc);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "table_data.doc";
+      a.click();
+      URL.revokeObjectURL(url);
+    } 
+  }
+};
+
+const handleButtonClick = () => {
+  const selectElement = document.getElementById("fileFormatSelect") as HTMLSelectElement;
+  const selectedFormat = selectElement.value;
+  handleDownload(selectedFormat);
+};
 
     return (
         <div className="max-w-7xl mx-auto">
@@ -59,7 +118,8 @@ const Tabularview: FC = () => {
 
                 <hr className="mb-4" />
 
-  <table className="min-w-full bg-white">
+  <table ref={tableRef}
+   className="min-w-full bg-white">
     <thead className="bg-gray-100">
       <tr>
         <th className="py-2 px-4 border-b text-left">Device Id</th>
@@ -135,13 +195,13 @@ const Tabularview: FC = () => {
     </label>
   </div>
 
-  {/* Export Options (Initially Hidden) */}
+  {/* Export Options*/}
   <div
     id="exportOptions"
     className="flex items-center gap-4"
     style={{ display: 'none' }}
   >
-    <select
+    <select id="fileFormatSelect"
       className="rounded-md border  p-1.5 outline-none shadow-sm focus:ring-2 focus:ring-blue-500  border-gray-300"
     >
       <option value="excel">Excel</option>
@@ -149,7 +209,7 @@ const Tabularview: FC = () => {
       <option value="csv">CSV</option>
     </select>
 
-    <button
+    <button onClick={handleButtonClick}
       className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out"
     >
       Download
