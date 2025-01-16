@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .analyticTab {
+    @apply w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 focus:outline-none data-[selected]:bg-white data-[selected]:shadow;
+  }
+  .navbarTab {
+    @apply w-full rounded-lg py-1 px-4 text-sm font-semibold focus:ring-0 focus:outline-0 leading-5 flex justify-center items-center text-center text-white transition-all duration-300 ease-in-out transform data-[selected]:text-blue-700;
+  }
+}
