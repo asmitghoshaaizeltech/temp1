@@ -16,6 +16,7 @@ import AnalyticDashboard from "./page/AnalyticDashboard/AnalyticDashboard";
 import FAQpage from "./component/FAQ/faqpage";
 import CheckBox from "./page/Checkbox/Checkbox";
 import Helppage from "./component/help/helppage";
+import UserDetailPage from "./page/User-detail/UserDetail";
 
 const App: FC = function () {
   return (
@@ -40,6 +41,8 @@ const App: FC = function () {
         <Route path="/faq" element={<FAQpage />} />
         <Route path="/checkbox" element={<CheckBox />} />
         <Route path="/help" element={<Helppage />} />
+        <Route path="/user-details" element={<AuthLayout Component={UserDetailPage} />} />
+        
       </Routes>
     </BrowserRouter>
   );
