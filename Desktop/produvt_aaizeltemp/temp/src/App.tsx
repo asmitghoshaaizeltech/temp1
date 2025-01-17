@@ -17,6 +17,8 @@ import FAQpage from "./component/FAQ/faqpage";
 import CheckBox from "./page/Checkbox/Checkbox";
 import Helppage from "./component/help/helppage";
 import UserDetailPage from "./page/User-detail/UserDetail";
+import Calibration from "./page/Calibration/Calibration";
+import CivilMetmessage from "./page/Metmessage/CivilMetMessage";
 
 const App: FC = function () {
   return (
@@ -41,8 +43,15 @@ const App: FC = function () {
         <Route path="/faq" element={<FAQpage />} />
         <Route path="/checkbox" element={<CheckBox />} />
         <Route path="/help" element={<Helppage />} />
-        <Route path="/user-details" element={<AuthLayout Component={UserDetailPage} />} />
-        
+        <Route
+          path="/user-details"
+          element={<AuthLayout Component={UserDetailPage} />}
+        />
+        <Route path="/bite" element={<AuthLayout Component={Calibration} />} />
+        <Route
+          path="/civilmetmessage"
+          element={<AuthLayout Component={CivilMetmessage} />}
+        />
       </Routes>
     </BrowserRouter>
   );
