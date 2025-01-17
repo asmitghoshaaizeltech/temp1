@@ -16,8 +16,12 @@ import AnalyticDashboard from "./page/AnalyticDashboard/AnalyticDashboard";
 import FAQpage from "./component/FAQ/faqpage";
 import CheckBox from "./page/Checkbox/Checkbox";
 import Helppage from "./component/help/helppage";
+<<<<<<< HEAD
 import Calibration from "./page/Calibration/Calibration";
 import CivilMetmessage from "./page/Metmessage/CivilMetMessage";
+=======
+import UserDetailPage from "./page/User-detail/UserDetail";
+>>>>>>> e2996af123d556b32819f55ff2529b7ecb35febf
 
 const App: FC = function () {
   return (
@@ -42,8 +46,13 @@ const App: FC = function () {
         <Route path="/faq" element={<FAQpage />} />
         <Route path="/checkbox" element={<CheckBox />} />
         <Route path="/help" element={<Helppage />} />
+<<<<<<< HEAD
         <Route path="/bite" element={<AuthLayout Component={Calibration}/>} />
         <Route path="/civilmetmessage" element={<AuthLayout Component={CivilMetmessage}/>} />
+=======
+        <Route path="/user-details" element={<AuthLayout Component={UserDetailPage} />} />
+        
+>>>>>>> e2996af123d556b32819f55ff2529b7ecb35febf
       </Routes>
     </BrowserRouter>
   );
