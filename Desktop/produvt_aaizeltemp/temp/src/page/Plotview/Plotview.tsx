@@ -442,11 +442,7 @@ const Dashboard: FC = () => {
               <div className="flex justify-center items-center h-[140px]">
                 <div className="relative">
                   {bearing !== null && (
-                    <Compass
-                      direction={bearing}
-                      size={150}
-                      className="text-blue-500"
-                    />
+                    <Compass direction={bearing} size={150} />
                   )}
                 </div>
               </div>
