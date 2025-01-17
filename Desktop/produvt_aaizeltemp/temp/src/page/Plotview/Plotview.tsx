@@ -1,5 +1,4 @@
 import React, { FC, useState, useEffect } from "react";
-import { LocationProvider } from "./LocationContext";
 import {
   LineChart,
   Line,
@@ -14,15 +13,7 @@ import Compass from "./Compass";
 import IndiaMap from "./InteractiveMap";
 import MeasurementChart from "./MeasurementChart";
 import useBearingStore from "./bearingStore";
-import ChecklistTabs from "../Checkbox/ChecklistTabs";
 
-interface ChartProps {
-  title: string;
-  data: any[];
-  dataKey: string;
-  unit: string;
-  color: string;
-}
 interface DataPoint {
   value: number;
   unit: string;

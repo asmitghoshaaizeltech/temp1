@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -6,10 +6,55 @@ import {
   Polyline,
   Marker,
   Popup,
+  useMap,
 } from "react-leaflet";
-import { LatLngTuple, LatLngBounds, Icon, DivIcon } from "leaflet";
+import { LatLngTuple, LatLngBounds, DivIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import useBearingStore from "./bearingStore";
+
+// Separate control component that uses useMap hook
+const FocusControl = ({
+  currentLocation,
+}: {
+  currentLocation: LatLngTuple | null;
+}) => {
+  const map = useMap();
+
+  const handleFocus = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentLocation) {
+      map.flyTo(currentLocation, 8, {
+        duration: 1.5,
+      });
+    }
+  };
+
+  return (
+    <div className="leaflet-top leaflet-right" style={{ zIndex: 1000 }}>
+      <div className="leaflet-control leaflet-bar">
+        <button
+          onClick={handleFocus}
+          className="leaflet-control-button"
+          style={{
+            width: "100px",
+            height: "30px",
+            backgroundColor: "white",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Center Map
+        </button>
+      </div>
+    </div>
+  );
+};
 
 interface DeliveryPoint {
   id: string;
@@ -39,7 +84,7 @@ const IndiaMap: React.FC = () => {
   const [currentLocation, setCurrentLocation] = useState<LatLngTuple | null>(
     null
   );
-  const [geoBounds, setGeoBounds] = useState<LatLngBounds | null>(null);
+  const [geoBounds, setGeoBounds]: any = useState<LatLngBounds | null>(null);
   const [currentPointIndex, setCurrentPointIndex] = useState(-1);
   const { setBearing } = useBearingStore();
 
@@ -59,12 +104,18 @@ const IndiaMap: React.FC = () => {
         
       </div>`,
       iconSize: [24, 24],
-      iconAnchor: [12, 12], // Center the icon
+      iconAnchor: [12, 12],
     });
   };
 
   const calculateBearing = (start: LatLngTuple, end: LatLngTuple): number => {
-    const [lat1, lon1] = start.map((coord) => (Math.PI * coord) / 180);
+    const [lat1, lon1] = start.map((coord) => {
+      if (coord === undefined) {
+        throw new Error("Undefined coordinate");
+      }
+      return (Math.PI * coord) / 180;
+    });
+
     const [lat2, lon2] = end.map((coord) => (Math.PI * coord) / 180);
     const dLon = lon2 - lon1;
 
@@ -77,7 +128,6 @@ const IndiaMap: React.FC = () => {
     return ((angle * 180) / Math.PI + 360) % 360;
   };
 
-  // Function to interpolate between two points
   const interpolate = (
     start: LatLngTuple,
     end: LatLngTuple,
@@ -89,7 +139,6 @@ const IndiaMap: React.FC = () => {
     ];
   };
 
-  // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -104,7 +153,6 @@ const IndiaMap: React.FC = () => {
         setGeoData(geoJson);
         setRouteData(routeJson[0]);
 
-        // Set initial location as origin
         const origin: LatLngTuple = [
           routeJson[0].origin.lat,
           routeJson[0].origin.lng,
@@ -120,7 +168,6 @@ const IndiaMap: React.FC = () => {
     fetchData();
   }, []);
 
-  // Handle route animation
   useEffect(() => {
     if (!routeData || currentPointIndex >= routeData.deliveries.length) return;
 
@@ -185,7 +232,6 @@ const IndiaMap: React.FC = () => {
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png" />
         <GeoJSON data={geoData.features} />
 
-        {/* Visited Path */}
         {visitedPath.length > 1 && (
           <Polyline
             positions={visitedPath}
@@ -195,12 +241,10 @@ const IndiaMap: React.FC = () => {
           />
         )}
 
-        {/* Current Path Segment */}
         {currentPath.length > 1 && (
           <Polyline positions={currentPath} color="red" weight={3} />
         )}
 
-        {/* Current Location with Plane Icon */}
         {currentLocation && (
           <Marker
             position={currentLocation}
@@ -217,6 +261,8 @@ const IndiaMap: React.FC = () => {
             </Popup>
           </Marker>
         )}
+
+        <FocusControl currentLocation={currentLocation} />
       </MapContainer>
     </div>
   );
