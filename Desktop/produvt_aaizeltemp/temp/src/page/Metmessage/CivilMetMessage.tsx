@@ -9,6 +9,8 @@ const CivilMetmessage: FC = () => {
   const [filters, setFilters] = useState({
     from_date: '',
     to_date: '',
+    from_time: '',
+    to_time: '',
     device_id: ''
   });
 
@@ -80,7 +82,7 @@ const CivilMetmessage: FC = () => {
   return (
     <>
     <div className="text-left max-w-7xl mx-auto">
-     <div className="border-2 border-gray-200 rounded-md shadow-md p-4 mt-4">
+    <div className="bg-white pt-4 px-6 mt-4">
     <nav>
     <label className="font-semibold text-[1rem] p-1">DEVICE AND TIME SELECTION</label>
     </nav>
@@ -88,7 +90,7 @@ const CivilMetmessage: FC = () => {
     <div className="filter-row p-4 flex justify-between gap-x-2">
 
     <div className="flex items-center gap-x-3">
-            <label className="self-center">From Date:</label>
+            <label className="self-center">From:</label>
             <input 
                 type="date" 
                 className="rounded-md border w-full p-1.5 outline-none shadow-sm focus:ring-2 focus:ring-blue-500  border-gray-300"
@@ -96,9 +98,18 @@ const CivilMetmessage: FC = () => {
                 onChange={(e) => setFilters({ ...filters, from_date: e.target.value })} 
             />
     </div>
-
     <div className="flex items-center gap-x-3">
-            <label className="self-center">To Date:</label>
+    <label className="self-center"></label>
+    <input 
+        type="time" 
+        className="rounded-md border w-full p-1.5 outline-none shadow-sm focus:ring-2 focus:ring-blue-500 border-gray-300"
+        value={filters.from_time} 
+        onChange={(e) => setFilters({ ...filters, from_time: e.target.value })} 
+    />
+</div>
+<div className="border-l border-gray-300 h-14 mx-4"></div>
+    <div className="flex items-center gap-x-3">
+            <label className="self-center">To:</label>
             <input 
                 type="date" 
                 className="rounded-md border w-full p-1.5 outline-none shadow-sm focus:ring-2 focus:ring-blue-500  border-gray-300"
@@ -106,6 +117,18 @@ const CivilMetmessage: FC = () => {
                 onChange={(e) => setFilters({ ...filters, to_date: e.target.value })}
             />
     </div>
+
+<div className="flex items-center gap-x-3">
+    <label className="self-center"></label>
+    <input 
+        type="time" 
+        className="rounded-md border w-full p-1.5 outline-none shadow-sm focus:ring-2 focus:ring-blue-500 border-gray-300"
+        value={filters.to_time} 
+        onChange={(e) => setFilters({ ...filters, to_time: e.target.value })}
+    />
+</div>
+
+<div className="border-l border-gray-300 h-14 mx-4"></div>
 
     <div className="flex items-center gap-x-3">
         <label className="self-center">Device ID:</label>
@@ -124,6 +147,7 @@ const CivilMetmessage: FC = () => {
 
 </div>
 </div>
+<hr className="mb-4" />
 
 
 
